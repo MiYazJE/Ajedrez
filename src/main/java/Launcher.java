@@ -1,15 +1,22 @@
+import controllers.Juego;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage stage) {
 
+        Juego ajedrez = new Juego();
+        Scene scene = new Scene( ajedrez );
 
+        stage.setScene( scene );
+        stage.setResizable( false );
+        stage.setTitle( "Ajedrez By Rubén Saiz" );
+        stage.getIcons().add(new Image("imagenes/icon.png"));
+        stage.show();
 
     }
 

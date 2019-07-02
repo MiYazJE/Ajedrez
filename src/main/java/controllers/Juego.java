@@ -3,8 +3,16 @@
  */
 package controllers;
 
-public class Juego {
+import javafx.scene.layout.BorderPane;
 
+public class Juego extends BorderPane {
+
+    private Tablero tablero;
+
+    public Juego() {
+        this.tablero = new Tablero();
+        this.setCenter( tablero );
+    }
 
 
 }
