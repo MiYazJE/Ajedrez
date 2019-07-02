@@ -1,0 +1,20 @@
+.negras {
+    -fx-background-color: #DAA520;
+}
+
+.blancas {
+    -fx-background-color: #FFFACD;
+}
+
+/*Caundo una celda tiene una figura*/
+.activo {
+    -fx-cursor: HAND;
+}
+
+.presionado {
+    -fx-opacity: 0.5;
+}
+
+.no-presionado {
+    -fx-opacity: 1;
+}
