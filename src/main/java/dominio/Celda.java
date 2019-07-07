@@ -3,29 +3,37 @@
  */
 package dominio;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
 
 public class Celda extends StackPane implements PropiedadesCelda {
 
-    private StringProperty nombreFigura;
+    private IntegerProperty figura;
     private boolean blancas;
     private int posY;
     private int posX;
     private String jugador;
-    private Image figura;
+    private Image imagenFigura;
+    // En esta lista se almacenan las celdas en las cuales se han hecho predicciones anteriores
+    private static ArrayList<Celda> predicciones;
+    private static Celda presionada;
 
     public Celda(int blanca, int posY, int posX) {
-        nombreFigura = new SimpleStringProperty();
+        figura = new SimpleIntegerProperty();
         this.blancas = (blanca % 2 == 0);
         crearCelda();
         crearEventos();
         this.posY = posY;
         this.posX = posX;
+        predicciones = new ArrayList<>();
     }
 
     public void setJugador(String jugador) {
@@ -36,8 +44,8 @@ public class Celda extends StackPane implements PropiedadesCelda {
         return jugador;
     }
 
-    public void setNombreFigura(String nombreFigura) {
-        this.nombreFigura.set(nombreFigura);
+    public void setFigura(Integer figura) {
+        this.figura.set(figura);
     }
 
     /**
@@ -56,33 +64,84 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     /**
-     * Establece el la nombreFigura y al jugador que pertenece a esta celda.
-     * @param tipo
+     * Establece la figura al jugador que pertenece a esta celda.
+     * @param figura
      * @param jugador
      */
-    public void establecerFigura(String tipo, String jugador) {
+    public void establecerFigura(Integer figura, String jugador) {
         this.setJugador(jugador);
-        this.nombreFigura.setValue(tipo);
+        this.figura.setValue(figura);
         this.getStyleClass().add("activo");
     }
 
     private void crearEventos() {
-        nombreFigura.addListener( (o, oldValue, newValue) -> pintarFigura() );
+        figura.addListener( (o, oldValue, newValue) -> pintarFigura() );
         this.setOnMouseClicked(e -> {
-            if (nombreFigura != null || !nombreFigura.getValue().isEmpty())
+            if (figura.getValue() != 0) {
                 this.getStyleClass().add("presionado");
-        });
-        this.setOnMouseExited(e -> {
-            if (nombreFigura != null || !nombreFigura.getValue().isEmpty())
-                this.getStyleClass().add("no-presionado");
+                crearPredicciones();
+            }
         });
     }
 
     private void pintarFigura() {
-        String urlImagen = "imagenes/piezas/" + nombreFigura.getValue() + "-" + jugador + ".png";
-        figura = new Image(urlImagen);
-        Rectangle r = new Rectangle(SIZE-20, SIZE-20, new ImagePattern(figura));
+        String urlImagen = "imagenes/piezas/" + FIGURAS[figura.getValue()] + "-" + jugador + ".png";
+        imagenFigura = new Image(urlImagen);
+        Rectangle r = new Rectangle(SIZE-20, SIZE-20, new ImagePattern(imagenFigura));
         this.getChildren().add( r );
+    }
+
+    private void crearPredicciones() {
+
+        limpiarPredicciones();
+        Celda aux = Tablero.celdas.get(posY).get(posX);
+        presionada = aux;
+
+        if (figura.getValue() == PEON) {
+            if (aux.getJugador().equals("j1")) {
+                if (posY == 0) return;
+                Tablero.celdas.get(posY-1).get(posX).pintarPosibleMovimiento();
+                predicciones.add(Tablero.celdas.get(posY-1).get(posX));
+            }
+            else {
+                if (posY == 0) return;
+                Tablero.celdas.get(posY+1).get(posX).pintarPosibleMovimiento();
+                predicciones.add(Tablero.celdas.get(posY+1).get(posX));
+            }
+        }
+        else if (figura.getValue() == CABALLO) {
+
+        }
+        else if (figura.getValue() == TORRE) {
+
+        }
+        else if (figura.getValue() == ALFIL) {
+
+        }
+        else if (figura.getValue() == REINA) {
+
+        }
+        else if (figura.getValue() == REY) {
+
+        }
+
+    }
+
+    private void limpiarPredicciones() {
+        if (presionada != null )
+            presionada.getStyleClass().add("no-presionado");
+        for (Celda celda : predicciones) {
+            celda.getChildren().clear();
+        }
+        predicciones.clear();
+    }
+
+    public void pintarPosibleMovimiento() {
+        Circle circulo = new Circle();
+        circulo.setCenterX(SIZE/4);
+        circulo.setCenterY(SIZE/4);
+        circulo.setRadius(SIZE/8);
+        this.getChildren().add( circulo );
     }
 
     @Override

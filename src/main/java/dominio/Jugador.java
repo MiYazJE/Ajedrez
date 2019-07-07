@@ -9,6 +9,7 @@ public class Jugador {
 
     public Jugador(String nombre) {
         this.nombre = nombre;
+        this.fichas = new ArrayList<>();
     }
 
     public String getNombre() {

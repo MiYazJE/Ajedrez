@@ -9,15 +9,14 @@ public class Juego extends BorderPane {
 
     private Tablero tablero;
     private int turno;
-    private Jugador j1;
-    private Jugador j2;
 
     public Juego() {
-        this.tablero = new Tablero();
+        this.tablero = new Tablero("j1", "j2");
         this.setCenter( tablero );
-        j1 = new Jugador("j1");
-        j2 = new Jugador("j2");
     }
+
+
+
 
 
 }
