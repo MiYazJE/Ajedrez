@@ -22,6 +22,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     private int posX;
     private String jugador;
     private Image imagenFigura;
+    private Circle circulo;
     // En esta lista se almacenan las celdas en las cuales se han hecho predicciones anteriores
     private static ArrayList<Celda> predicciones;
     private static Celda presionada;
@@ -34,6 +35,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
         this.posY = posY;
         this.posX = posX;
         predicciones = new ArrayList<>();
+        crearCirculo();
     }
 
     public void setJugador(String jugador) {
@@ -46,6 +48,13 @@ public class Celda extends StackPane implements PropiedadesCelda {
 
     public void setFigura(Integer figura) {
         this.figura.set(figura);
+    }
+
+    private void crearCirculo() {
+        circulo = new Circle();
+        circulo.setCenterX(SIZE/4);
+        circulo.setCenterY(SIZE/4);
+        circulo.setRadius(SIZE/8);
     }
 
     /**
@@ -128,19 +137,21 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     private void limpiarPredicciones() {
+
         if (presionada != null )
             presionada.getStyleClass().add("no-presionado");
-        for (Celda celda : predicciones) {
-            celda.getChildren().clear();
-        }
+
+        for (Celda celda : predicciones)
+            limpiarCelda(celda);
+
         predicciones.clear();
     }
 
-    public void pintarPosibleMovimiento() {
-        Circle circulo = new Circle();
-        circulo.setCenterX(SIZE/4);
-        circulo.setCenterY(SIZE/4);
-        circulo.setRadius(SIZE/8);
+    private void limpiarCelda(Celda celda) {
+        celda.getChildren().clear();
+    }
+
+    private void pintarPosibleMovimiento() {
         this.getChildren().add( circulo );
     }
 
