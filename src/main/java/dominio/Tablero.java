@@ -12,12 +12,12 @@ import java.util.List;
 public class Tablero extends VBox implements PropiedadesCelda {
 
     private static final int DIM = 8;
-    public static List<List<Celda>> celdas;
+    public static Celda[][] celdas;
     public static Jugador j1;
     public static Jugador j2;
 
     public Tablero(String nameJ1, String nameJ2) {
-        celdas = new ArrayList<>();
+        celdas = new Celda[DIM][DIM];
         j1 = new Jugador(nameJ1);
         j2 = new Jugador(nameJ2);
         generarTablero();
@@ -33,11 +33,10 @@ public class Tablero extends VBox implements PropiedadesCelda {
         for (int i = 0; i < DIM; i++) {
 
             HBox fila = new HBox();
-            celdas.add(new ArrayList<>());
 
             for (int j = 0; j < DIM; j++) {
                 Celda celda = new Celda(i+j, i, j);
-                celdas.get(i).add( celda );
+                celdas[i][j] = celda ;
                 fila.getChildren().add( celda );
                 this.getStylesheets().add("/estilos/celdas.css");
             }
@@ -52,17 +51,17 @@ public class Tablero extends VBox implements PropiedadesCelda {
         int[] fichas = {TORRE, CABALLO, ALFIL, REINA, REY, ALFIL, CABALLO, TORRE};
 
         for (int i = 0; i < 8; i++){
-            celdas.get(0).get(i).establecerFigura(fichas[i], j2.getNombre());
-            j2.getFichas().add(celdas.get(0).get(i));
+            celdas[0][i].establecerFigura(fichas[i], j2.getNombre());
+            j2.getFichas().add(celdas[0][i]);
 
-            celdas.get(celdas.size()-1).get(i).establecerFigura(fichas[i], j1.getNombre());
-            j1.getFichas().add(celdas.get(celdas.size()-1).get(i));
+            celdas[celdas.length-1][i].establecerFigura(fichas[i], j1.getNombre());
+            j1.getFichas().add(celdas[celdas.length-1][i]);
 
-            celdas.get(1).get(i).establecerFigura(PEON, j2.getNombre());
-            j2.getFichas().add(celdas.get(1).get(i));
+            celdas[1][i].establecerFigura(PEON, j2.getNombre());
+            j2.getFichas().add(celdas[1][i]);
 
-            celdas.get(celdas.size()-2).get(i).establecerFigura(PEON, j1.getNombre());
-            j1.getFichas().add(celdas.get(celdas.size()-2).get(i));
+            celdas[celdas.length-2][i].establecerFigura(PEON, j1.getNombre());
+            j1.getFichas().add(celdas[celdas.length-2][i]);
         }
 
     }

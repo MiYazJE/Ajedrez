@@ -110,19 +110,19 @@ public class Celda extends StackPane implements PropiedadesCelda {
     private void crearPredicciones() {
 
         limpiarPredicciones();
-        Celda celdaActual = Tablero.celdas.get(posY).get(posX);
+        Celda celdaActual = Tablero.celdas[posY][posX];
         presionada = celdaActual;
 
         if (figura.getValue() == PEON) {
             if (celdaActual.getJugador().equals("j1")) {
                 if (posY == 0) return;
-                Tablero.celdas.get(posY-1).get(posX).pintarPosibleMovimiento();
-                predicciones.add(Tablero.celdas.get(posY-1).get(posX));
+                Tablero.celdas[posY-1][posX].pintarPosibleMovimiento();
+                predicciones.add(Tablero.celdas[posY-1][posX]);
             }
             else {
                 if (posY == 0) return;
-                Tablero.celdas.get(posY+1).get(posX).pintarPosibleMovimiento();
-                predicciones.add(Tablero.celdas.get(posY+1).get(posX));
+                Tablero.celdas[posY+1][posX].pintarPosibleMovimiento();
+                predicciones.add(Tablero.celdas[posY+1][posX]);
             }
         }
         else if (figura.getValue() == CABALLO) {
@@ -212,7 +212,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
             posC = posX + colDirections[i];
             if (posF < 0 || posF >= 8 || posC < 0 || posC >= 8)
                 continue;
-            Celda celdaActual = Tablero.celdas.get(posF).get(posC);
+            Celda celdaActual = Tablero.celdas[posF][posC];
             if (esValida( celdaActual )) {
                 celdaActual.pintarPosibleMovimiento();
                 predicciones.add( celdaActual );
