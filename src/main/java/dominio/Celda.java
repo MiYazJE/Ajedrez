@@ -3,6 +3,7 @@
  */
 package dominio;
 
+import dominio.figuras.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
@@ -15,10 +16,11 @@ import java.util.ArrayList;
 
 public class Celda extends StackPane implements PropiedadesCelda {
 
-    private IntegerProperty figura;
+    private IntegerProperty tipoFigura;
+    private Figura figura;
     private boolean blancas;
-    private int posY;
-    private int posX;
+    public int posY;
+    public int posX;
     private String jugador;
     private Circle circulo;
     // En esta lista se almacenan las celdas en las cuales se han hecho predicciones anteriores
@@ -26,7 +28,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     private static Celda presionada;
 
     public Celda(int blanca, int posY, int posX) {
-        figura = new SimpleIntegerProperty();
+        tipoFigura = new SimpleIntegerProperty();
         this.blancas = (blanca % 2 == 0);
         crearCelda();
         crearEventos();
@@ -44,14 +46,6 @@ public class Celda extends StackPane implements PropiedadesCelda {
         return jugador;
     }
 
-    public void setFigura(Integer figura) {
-        this.figura.set(figura);
-    }
-
-    public String getNombre() {
-        return this.jugador;
-    }
-
     private void crearCirculo() {
         circulo = new Circle();
         circulo.setCenterX(SIZE/4);
@@ -62,7 +56,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     /**
      * Crea las propiedades:
      *  -Tamaños de la celda.
-     *  -
+     *  -Añade una clase de estilos css.
      */
     private void crearCelda() {
         this.getStyleClass().add(getColor());
@@ -70,27 +64,39 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     /**
-     * Obtiene el color de la celda en base a la variable boleana "blancas".
+     * Obtiene el color de la celda en base a la variable boleana "blancas",
+     * el string obtenido es usado como una clase css.
      */
     private String getColor() {
         return (blancas) ? "blancas" : "negras";
     }
 
     /**
-     * Establece la figura al jugador que pertenece a esta celda.
+     * Establece la tipoFigura al jugador que pertenece a esta celda.
      * @param figura
      * @param jugador
      */
     public void establecerFigura(Integer figura, String jugador) {
         this.setJugador(jugador);
-        this.figura.setValue(figura);
+        this.tipoFigura.setValue(figura);
+        this.figura = getFigura();
         this.getStyleClass().add("activo");
     }
 
+    private Figura getFigura() {
+        switch (tipoFigura.getValue()) {
+            case CABALLO: return new Caballo();
+            case ALFIL: return new Alfil();
+            case REINA: return new Reina();
+            case REY: return new Rey();
+        }
+        return new Peon();
+    }
+
     private void crearEventos() {
-        figura.addListener( (o, oldValue, newValue) -> pintarFigura() );
+        tipoFigura.addListener( (o, oldValue, newValue) -> pintarFigura() );
         this.setOnMouseClicked(e -> {
-            if (figura.getValue() != 0) {
+            if (tipoFigura.getValue() != 0) {
                 this.getStyleClass().add("presionado");
                 crearPredicciones();
             }
@@ -98,7 +104,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     private void pintarFigura() {
-        String urlImagen = "imagenes/piezas/" + FIGURAS[figura.getValue()] + "-" + jugador + ".png";
+        String urlImagen = "imagenes/piezas/" + FIGURAS[tipoFigura.getValue()] + "-" + jugador + ".png";
         Image imagenFigura = new Image(urlImagen);
         Rectangle r = new Rectangle(SIZE-20, SIZE-20, new ImagePattern(imagenFigura));
         this.getChildren().add( r );
@@ -113,34 +119,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
         Celda celdaActual = Tablero.celdas[posY][posX];
         presionada = celdaActual;
 
-        if (figura.getValue() == PEON) {
-            if (celdaActual.getJugador().equals("j1")) {
-                if (posY == 0) return;
-                Tablero.celdas[posY-1][posX].pintarPosibleMovimiento();
-                predicciones.add(Tablero.celdas[posY-1][posX]);
-            }
-            else {
-                if (posY == 0) return;
-                Tablero.celdas[posY+1][posX].pintarPosibleMovimiento();
-                predicciones.add(Tablero.celdas[posY+1][posX]);
-            }
-        }
-        else if (figura.getValue() == CABALLO) {
-            moverCaballo( celdaActual );
-        }
-        else if (figura.getValue() == TORRE) {
-
-        }
-        else if (figura.getValue() == ALFIL) {
-
-        }
-        else if (figura.getValue() == REINA) {
-
-        }
-        else if (figura.getValue() == REY) {
-
-        }
-
+        figura.crearPredicciones(Tablero.celdas, celdaActual, predicciones);
     }
 
     /**
@@ -161,7 +140,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
 
     /**
      * Elimina todos los componentes hijos de una celda, como pueden ser
-     * un circulo en el caso de una celda prediccion o una figura en el de
+     * un circulo en el caso de una celda prediccion o una tipoFigura en el de
      * ser una ficha.
      * @param celda
      */
@@ -170,55 +149,20 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     /**
-     * Valida si la celda contiene alguna figura.
+     * Valida si la celda contiene alguna tipoFigura.
      * Si contiene algún valor diferente a 0 significa que no es válida.
      * @param celda
-     * @return true: si contiene figura  false: no cotiene figura
+     * @return true: si contiene tipoFigura  false: no cotiene tipoFigura
      */
-    private boolean esValida(Celda celda) {
-        return celda.figura.getValue() == 0;
+    public static boolean esValida(Celda celda) {
+        return celda.tipoFigura.getValue() == 0;
     }
 
     /**
      * Introduce un circulo en medio de la celda.
      */
-    private void pintarPosibleMovimiento() {
+    public void pintarPosibleMovimiento() {
         this.getChildren().add( circulo );
-    }
-
-    private void moverCaballo(Celda celda) {
-        /*
-
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 * 0 * 0 0 0
-        0 * 0 0 0 * 0 0
-        0 0 0 X 0 0 0 0
-        0 * 0 0 0 * 0 0
-        0 0 * 0 * 0 0 0
-
-        ROW -> [-2, -1, -2, -1,  1,  2, 2, 1]
-        COL -> [-1, -2,  1,  2, -2, -1, 1, 2]
-
-         */
-
-        int[] rowDirections = {-2, -1, -2, -1,  1,  2, 2, 1};
-        int[] colDirections = {-1, -2,  1,  2, -2, -1, 1, 2};
-        int posF, posC;
-
-        for (int i = 0; i < 8; i++) {
-            posF = posY + rowDirections[i];
-            posC = posX + colDirections[i];
-            if (posF < 0 || posF >= 8 || posC < 0 || posC >= 8)
-                continue;
-            Celda celdaActual = Tablero.celdas[posF][posC];
-            if (esValida( celdaActual )) {
-                celdaActual.pintarPosibleMovimiento();
-                predicciones.add( celdaActual );
-            }
-        }
-
     }
 
     @Override
