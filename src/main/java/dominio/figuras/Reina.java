@@ -14,8 +14,8 @@ public class Reina extends Figura {
     }
 
     @Override
-    public void crearPredicciones(Celda[][] celdas, Celda celdaActual, ArrayList<Celda> predicciones) {
-
+    public ArrayList<Celda> crearPredicciones(Celda[][] tablero, Celda celdaActual) {
+        return new ArrayList<Celda>();
     }
 
     @Override

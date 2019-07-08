@@ -6,6 +6,7 @@ package dominio;
 import dominio.figuras.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
@@ -30,12 +31,12 @@ public class Celda extends StackPane implements PropiedadesCelda {
     public Celda(int blanca, int posY, int posX) {
         tipoFigura = new SimpleIntegerProperty();
         this.blancas = (blanca % 2 == 0);
-        crearCelda();
+        crearPropiedadesCelda();
         crearEventos();
+        crearCirculo();
         this.posY = posY;
         this.posX = posX;
         predicciones = new ArrayList<>();
-        crearCirculo();
     }
 
     public void setJugador(String jugador) {
@@ -48,9 +49,9 @@ public class Celda extends StackPane implements PropiedadesCelda {
 
     private void crearCirculo() {
         circulo = new Circle();
-        circulo.setCenterX(SIZE/4);
-        circulo.setCenterY(SIZE/4);
-        circulo.setRadius(SIZE/8);
+        circulo.setCenterX(SIZE / 4);
+        circulo.setCenterY(SIZE / 4);
+        circulo.setRadius(SIZE / 8);
     }
 
     /**
@@ -58,7 +59,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
      *  -Tamaños de la celda.
      *  -Añade una clase de estilos css.
      */
-    private void crearCelda() {
+    private void crearPropiedadesCelda() {
         this.getStyleClass().add(getColor());
         this.setPrefSize(SIZE, SIZE);
     }
@@ -97,10 +98,16 @@ public class Celda extends StackPane implements PropiedadesCelda {
         tipoFigura.addListener( (o, oldValue, newValue) -> pintarFigura() );
         this.setOnMouseClicked(e -> {
             if (tipoFigura.getValue() != 0) {
-                this.getStyleClass().add("presionado");
-                crearPredicciones();
+               aplicarBrillo();
+               crearPredicciones();
             }
         });
+    }
+
+    private void aplicarBrillo() {
+        ColorAdjust effect = new ColorAdjust();
+        effect.setBrightness(0.5);
+        this.setEffect(effect);
     }
 
     private void pintarFigura() {
@@ -117,9 +124,8 @@ public class Celda extends StackPane implements PropiedadesCelda {
 
         limpiarPredicciones();
         Celda celdaActual = Tablero.celdas[posY][posX];
-        presionada = celdaActual;
 
-        figura.crearPredicciones(Tablero.celdas, celdaActual, predicciones);
+        predicciones = figura.crearPredicciones(Tablero.celdas, celdaActual);
     }
 
     /**
@@ -129,8 +135,9 @@ public class Celda extends StackPane implements PropiedadesCelda {
      */
     private void limpiarPredicciones() {
 
-        if (presionada != null )
-            presionada.getStyleClass().add("no-presionado");
+        if (presionada != null)
+            presionada.setEffect(null);
+        presionada = this;
 
         for (Celda celda : predicciones)
             limpiarCelda(celda);
@@ -145,7 +152,8 @@ public class Celda extends StackPane implements PropiedadesCelda {
      * @param celda
      */
     private void limpiarCelda(Celda celda) {
-        celda.getChildren().clear();
+        Tablero.celdas[celda.posY][celda.posX].getChildren().clear();
+        Tablero.celdas[celda.posY][celda.posX].getStyleClass().add("activo");
     }
 
     /**
@@ -163,6 +171,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
      */
     public void pintarPosibleMovimiento() {
         this.getChildren().add( circulo );
+        this.getStyleClass().add("activo");
     }
 
     @Override

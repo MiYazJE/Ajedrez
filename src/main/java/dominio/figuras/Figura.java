@@ -16,7 +16,7 @@ public abstract class Figura {
         this.atacada = false;
     }
 
-    public abstract void crearPredicciones(Celda[][] celdas, Celda celdaActual, ArrayList<Celda> predicciones);
+    public abstract ArrayList<Celda> crearPredicciones(Celda[][] tablero, Celda celdaActual);
 
     public abstract void mover();
 
