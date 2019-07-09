@@ -87,9 +87,10 @@ public class Celda extends StackPane implements PropiedadesCelda {
     private Figura getFigura() {
         switch (tipoFigura.getValue()) {
             case CABALLO: return new Caballo();
-            case ALFIL: return new Alfil();
-            case REINA: return new Reina();
-            case REY: return new Rey();
+            case ALFIL:   return new Alfil();
+            case REINA:   return new Reina();
+            case REY:     return new Rey();
+            case TORRE:   return new Torre();
         }
         return new Peon();
     }
