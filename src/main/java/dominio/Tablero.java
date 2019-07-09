@@ -47,7 +47,7 @@ public class Tablero extends VBox implements PropiedadesCelda {
     }
 
     private void rellenarFiguras() {
-        /*
+
         int[] fichas = {TORRE, CABALLO, ALFIL, REINA, REY, ALFIL, CABALLO, TORRE};
 
         for (int i = 0; i < 8; i++){
@@ -62,13 +62,12 @@ public class Tablero extends VBox implements PropiedadesCelda {
 
             celdas[celdas.length-2][i].establecerFigura(PEON, j1.getNombre());
             j1.getFichas().add(celdas[celdas.length-2][i]);
-        } */
+        }
 
-        celdas[3][3].establecerFigura(REINA, j1.getNombre());
-        celdas[1][1].establecerFigura(PEON, j1.getNombre());
-        celdas[3][1].establecerFigura(PEON, j1.getNombre());
-        celdas[1][3].establecerFigura(PEON, j1.getNombre());
-        celdas[6][6].establecerFigura(PEON, j1.getNombre());
+        /*celdas[0][0].establecerFigura(REINA, j1.getNombre());
+        celdas[4][4].establecerFigura(ALFIL, j1.getNombre());
+        celdas[7][3].establecerFigura(REY, j1.getNombre()); */
+
 
     }
 

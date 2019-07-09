@@ -66,7 +66,7 @@ public class Reina extends Figura {
         int aux = celdaActual.posX;
         for (int i = celdaActual.posY+1; i < 8; i++) {
             ++aux;
-            if (!valid(aux, i)) break;
+            if (!esValido(aux, i)) break;
             Celda comprobar = tablero[i][aux];
             if (!Celda.esValida(comprobar))
                 break;
@@ -77,7 +77,7 @@ public class Reina extends Figura {
         aux = celdaActual.posX;
         for (int i = celdaActual.posY-1; i >= 0; i--) {
             --aux;
-            if (!valid(aux, i)) break;
+            if (!esValido(aux, i)) break;
             Celda comprobar = tablero[i][aux];
             if (!Celda.esValida(comprobar))
                 break;
@@ -89,7 +89,7 @@ public class Reina extends Figura {
         aux = celdaActual.posY;
         for (int i = celdaActual.posX+1; i < 8; i++) {
             --aux;
-            if (!valid(aux, i)) break;
+            if (!esValido(aux, i)) break;
             Celda comprobar = tablero[aux][i];
             if (!Celda.esValida(comprobar))
                 break;
@@ -100,7 +100,7 @@ public class Reina extends Figura {
         aux = celdaActual.posY;
         for (int i = celdaActual.posX-1; i >= 0; i--) {
             ++aux;
-            if (!valid(aux, i)) break;
+            if (!esValido(aux, i)) break;
             Celda comprobar = tablero[aux][i];
             if (!Celda.esValida(comprobar))
                 break;
@@ -111,7 +111,7 @@ public class Reina extends Figura {
         return predicciones;
     }
 
-    private boolean valid(int f, int c) {
+    private boolean esValido(int f, int c) {
         return f >= 0 && f < 8 && c >= 0 && c < 8;
     }
 
