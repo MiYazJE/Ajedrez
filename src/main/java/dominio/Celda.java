@@ -24,6 +24,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     public int posX;
     private String jugador;
     private Circle circulo;
+    private boolean posible;
 
     // En esta lista se almacenan las celdas en las cuales se han hecho predicciones anteriores
     private static ArrayList<Celda> predicciones;
@@ -132,6 +133,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
         limpiarPredicciones();
         Celda celdaActual = Tablero.celdas[posY][posX];
         predicciones = figura.crearPredicciones(Tablero.celdas, celdaActual);
+        for (Celda celda : predicciones)  celda.posible = true;
     }
 
     /**
@@ -153,18 +155,22 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     private void intercambiarCeldas() {
-        // Quitar el indicador de movimiento
-        this.getChildren().clear();
-        this.tipoFigura.setValue(presionada.tipoFigura.getValue());
-        this.jugador = presionada.jugador;
-        this.figura = presionada.figura;
+        if (this.posible){
+            // Quitar el indicador de movimiento
+            this.getChildren().clear();
+            this.tipoFigura.setValue(presionada.tipoFigura.getValue());
+            this.jugador = presionada.jugador;
+            this.figura = presionada.figura;
 
-        presionada.tipoFigura.setValue(0);
-        presionada.getChildren().clear();
-        presionada.setEffect(null);
-        presionada.jugador = null;
+            presionada.tipoFigura.setValue(0);
+            presionada.getChildren().clear();
+            presionada.getStyleClass().remove("activo");
+            presionada.setEffect(null);
+            presionada.jugador = null;
+            presionada.posible = false;
 
-        limpiarPredicciones();
+            limpiarPredicciones();
+        }
     }
 
     /**
@@ -177,6 +183,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
         if (celda.jugador == null) {
             Tablero.celdas[celda.posY][celda.posX].getChildren().clear();
             Tablero.celdas[celda.posY][celda.posX].getStyleClass().remove("activo");
+            celda.posible = false;
         }
     }
 
