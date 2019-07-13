@@ -37,8 +37,4 @@ public class Rey extends Figura {
         return f >= 0 && f < 8 && c >= 0 && c < 8;
     }
 
-    @Override
-    public void mover() {
-
-    }
 }

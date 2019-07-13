@@ -18,7 +18,5 @@ public abstract class Figura {
 
     public abstract ArrayList<Celda> crearPredicciones(Celda[][] tablero, Celda celdaActual);
 
-    public abstract void mover();
-
 
 }

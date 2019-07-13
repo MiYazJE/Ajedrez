@@ -29,8 +29,4 @@ public class Peon extends Figura {
         return predicciones;
     }
 
-    @Override
-    public void mover() {
-
-    }
 }

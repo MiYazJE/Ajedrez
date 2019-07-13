@@ -46,8 +46,4 @@ public class Torre extends Figura {
         return predicciones;
     }
 
-    @Override
-    public void mover() {
-
-    }
 }

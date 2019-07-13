@@ -32,8 +32,4 @@ public class Caballo extends Figura {
         return predicciones;
     }
 
-    @Override
-    public void mover() {
-
-    }
 }

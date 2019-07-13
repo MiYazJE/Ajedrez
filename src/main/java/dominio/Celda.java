@@ -24,8 +24,10 @@ public class Celda extends StackPane implements PropiedadesCelda {
     public int posX;
     private String jugador;
     private Circle circulo;
+
     // En esta lista se almacenan las celdas en las cuales se han hecho predicciones anteriores
     private static ArrayList<Celda> predicciones;
+    // Aquí sera almacenada la celda que haya sido presionada
     private static Celda presionada;
 
     public Celda(int blanca, int posY, int posX) {
@@ -73,7 +75,7 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     /**
-     * Establece la tipoFigura al jugador que pertenece a esta celda.
+     * Establece el tipoFigura al jugador que pertenece a esta celda.
      * @param figura
      * @param jugador
      */
@@ -102,6 +104,9 @@ public class Celda extends StackPane implements PropiedadesCelda {
                aplicarBrillo();
                crearPredicciones();
             }
+            else if (tipoFigura.getValue() == 0 && presionada != null) {
+                intercambiarCeldas();
+            }
         });
     }
 
@@ -112,9 +117,11 @@ public class Celda extends StackPane implements PropiedadesCelda {
     }
 
     private void pintarFigura() {
-        String urlImagen = "imagenes/piezas/" + FIGURAS[tipoFigura.getValue()] + "-" + jugador + ".png";
-        Image imagenFigura = new Image(urlImagen);
-        Rectangle r = new Rectangle(SIZE-20, SIZE-20, new ImagePattern(imagenFigura));
+        if (this.tipoFigura.getValue() == 0) return;
+        String player = (jugador == null) ? presionada.jugador : jugador;
+        String urlImagen = "imagenes/piezas/" + FIGURAS[tipoFigura.getValue()] + "-" + player + ".png";
+        Image imagenFigura = new Image( urlImagen );
+        Rectangle r = new Rectangle(SIZE-20, SIZE-20, new ImagePattern( imagenFigura ));
         this.getChildren().add( r );
     }
 
@@ -122,10 +129,8 @@ public class Celda extends StackPane implements PropiedadesCelda {
      * Al darle click sobre una celda se mostrara graficamente con un circulo sobre las celdas a las cuales puedes moverte.
      */
     private void crearPredicciones() {
-
         limpiarPredicciones();
         Celda celdaActual = Tablero.celdas[posY][posX];
-
         predicciones = figura.crearPredicciones(Tablero.celdas, celdaActual);
     }
 
@@ -136,14 +141,29 @@ public class Celda extends StackPane implements PropiedadesCelda {
      */
     private void limpiarPredicciones() {
 
-        if (presionada != null)
-            presionada.setEffect(null);
         presionada = this;
+        presionada.setEffect(null);
+
 
         for (Celda celda : predicciones)
             limpiarCelda(celda);
 
         predicciones.clear();
+    }
+
+    private void intercambiarCeldas() {
+        // Quitar el indicador de movimiento
+        this.getChildren().clear();
+        this.tipoFigura.setValue(presionada.tipoFigura.getValue());
+        this.jugador = presionada.jugador;
+        this.figura = presionada.figura;
+
+        presionada.tipoFigura.setValue(0);
+        presionada.getChildren().clear();
+        presionada.setEffect(null);
+        presionada.jugador = null;
+
+        limpiarPredicciones();
     }
 
     /**
@@ -153,8 +173,10 @@ public class Celda extends StackPane implements PropiedadesCelda {
      * @param celda
      */
     private void limpiarCelda(Celda celda) {
-        Tablero.celdas[celda.posY][celda.posX].getChildren().clear();
-        Tablero.celdas[celda.posY][celda.posX].getStyleClass().add("activo");
+        if (celda.jugador == null) {
+            Tablero.celdas[celda.posY][celda.posX].getChildren().clear();
+            Tablero.celdas[celda.posY][celda.posX].getStyleClass().remove("activo");
+        }
     }
 
     /**

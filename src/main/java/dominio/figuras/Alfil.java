@@ -8,6 +8,7 @@ import dominio.Celda;
 import java.util.ArrayList;
 
 public class Alfil extends Figura {
+
     @Override
     public ArrayList<Celda> crearPredicciones(Celda[][] tablero, Celda celdaActual) {
 
@@ -65,8 +66,4 @@ public class Alfil extends Figura {
         return f >= 0 && f < 8 && c >= 0 && c < 8;
     }
 
-    @Override
-    public void mover() {
-
-    }
 }

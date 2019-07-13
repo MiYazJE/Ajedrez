@@ -36,7 +36,7 @@ public class Tablero extends VBox implements PropiedadesCelda {
 
             for (int j = 0; j < DIM; j++) {
                 Celda celda = new Celda(i+j, i, j);
-                celdas[i][j] = celda ;
+                celdas[i][j] = celda;
                 fila.getChildren().add( celda );
                 this.getStylesheets().add("/estilos/celdas.css");
             }
@@ -47,7 +47,7 @@ public class Tablero extends VBox implements PropiedadesCelda {
     }
 
     private void rellenarFiguras() {
-        /*
+
         int[] fichas = {TORRE, CABALLO, ALFIL, REINA, REY, ALFIL, CABALLO, TORRE};
 
         for (int i = 0; i < 8; i++){
@@ -62,10 +62,7 @@ public class Tablero extends VBox implements PropiedadesCelda {
 
             celdas[celdas.length-2][i].establecerFigura(PEON, j1.getNombre());
             j1.getFichas().add(celdas[celdas.length-2][i]);
-        }*/
-
-        celdas[4][4].establecerFigura(TORRE, j1.getNombre());
-
+        }
 
     }
 
