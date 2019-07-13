@@ -141,9 +141,10 @@ public class Celda extends StackPane implements PropiedadesCelda {
      */
     private void limpiarPredicciones() {
 
-        presionada = this;
-        presionada.setEffect(null);
+        if (presionada != null && this != presionada)
+            presionada.setEffect(null);
 
+        presionada = this;
 
         for (Celda celda : predicciones)
             limpiarCelda(celda);
